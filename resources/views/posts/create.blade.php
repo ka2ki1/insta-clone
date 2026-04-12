@@ -1,15 +1,13 @@
-<h1>投稿作成</h1>
-
-<form action="{{ route('posts.store') }}" method="POST">
+<form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
     <div>
-        <textarea name="body" rows="5" cols="40" placeholder="本文を入力">{{ old('body') }}</textarea>
+        <textarea name="body"></textarea>
     </div>
 
-    @error('body')
-    <p>{{ $message }}</p>
-    @enderror
+    <div>
+        <input type="file" name="image">
+    </div>
 
     <button type="submit">投稿する</button>
 </form>

@@ -22,11 +22,19 @@ class PostController extends Controller
     {
         $request->validate([
             'body' => ['required', 'max:1000'],
+            'image' => ['nullable', 'image', 'max:2048'],
         ]);
+
+        $path = null;
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('posts', 'public');
+        }
 
         Post::create([
             'user_id' => auth()->id(),
             'body' => $request->body,
+            'image_path' => $path,
         ]);
 
         return redirect()->route('posts.index');

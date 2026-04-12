@@ -7,6 +7,10 @@
     <strong>{{ $post->user->name }}</strong>
     <p>{{ $post->body }}</p>
 
+    @if ($post->image_path)
+    <img src="{{ asset('storage/' . $post->image_path) }}" width="200">
+    @endif
+
     @if ($post->user_id === auth()->id())
     <form action="{{ route('posts.destroy', $post) }}" method="POST">
         @csrf
