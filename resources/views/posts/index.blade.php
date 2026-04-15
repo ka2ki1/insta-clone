@@ -32,6 +32,23 @@
     @endif
     {{-- ここまでいいね機能 --}}
 
+    {{-- ここからコメント機能 --}}
+    <p>コメント</p>
+
+    @foreach ($post->comments as $comment)
+        <div style="margin-left: 20px; margin-bottom: 5px;">
+            <strong>{{ $comment->user->name }}</strong>
+            <span>{{ $comment->body }}</span>
+        </div>
+    @endforeach
+
+    <form action="{{ route('comments.store', $post) }}" method="POST" style="margin-top: 10px;">
+        @csrf
+        <input type="text" name="body" placeholder="コメントを書く">
+        <button type="submit">コメントする</button>
+    </form>
+    {{-- ここまでコメント機能 --}}
+
     @if ($post->user_id === auth()->id())
     <form action="{{ route('posts.destroy', $post) }}" method="POST">
         @csrf
