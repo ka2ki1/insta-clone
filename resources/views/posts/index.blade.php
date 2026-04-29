@@ -1,103 +1,93 @@
 <x-app-layout>
-    <div class="max-w-md mx-auto py-8 px-4">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-xl font-bold">投稿一覧</h1>
+    <div style="max-width: 460px; margin: 32px auto; padding: 0 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h1 style="font-size: 22px; font-weight: bold;">投稿一覧</h1>
 
-            <a href="{{ route('posts.create') }}"
-               class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
-                新規投稿
-            </a>
+            <div>
+                <a href="{{ route('mypage.index') }}"
+                   style="display: inline-block; background: #374151; color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; margin-right: 8px;">
+                    マイページ
+                </a>
+
+                <a href="{{ route('posts.create') }}"
+                   style="display: inline-block; background: #3b82f6; color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none;">
+                    新規投稿
+                </a>
+            </div>
         </div>
 
-        <div class="space-y-6">
-            @foreach ($posts as $post)
-                <div class="bg-white shadow rounded-2xl border">
+        @foreach ($posts as $post)
+            <div style="max-width: 420px; margin: 0 auto 24px; background: white; border: 1px solid #ddd; border-radius: 12px; overflow: hidden;">
+                <div style="padding: 12px 16px; border-bottom: 1px solid #eee;">
+                    <strong>{{ $post->user->name }}</strong>
+                </div>
 
-                    {{-- ユーザー名 --}}
-                    <div class="px-4 py-3 border-b">
-                        <p class="font-semibold text-gray-800">
-                            {{ $post->user->name }}
-                        </p>
-                    </div>
-
-                    {{-- 画像 --}}
-                    @if ($post->image_path)
+                @if ($post->image_path)
+                    <div style="width: 100%; height: 320px; overflow: hidden; background: #f3f4f6;">
                         <img src="{{ asset('storage/' . $post->image_path) }}"
-                             class="w-full h-80 object-cover">
-                    @endif
+                             style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                    </div>
+                @endif
 
-                    {{-- 本文 --}}
-                    <div class="px-4 py-3">
-                        <p class="text-gray-800 mb-3">
-                            {{ $post->body }}
-                        </p>
+                <div style="padding: 14px 16px;">
+                    <p style="margin-bottom: 12px;">{{ $post->body }}</p>
 
-                        {{-- いいね --}}
-                        <div class="flex items-center gap-3 mb-3">
-                            <p class="text-sm text-gray-600">
-                                いいね {{ $post->likes->count() }}
-                            </p>
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 14px;">いいね {{ $post->likes->count() }}</span>
 
-                            @php
-                                $liked = $post->likes->contains('user_id', auth()->id());
-                            @endphp
+                        @php
+                            $liked = $post->likes->contains('user_id', auth()->id());
+                        @endphp
 
-                            @if ($liked)
-                                <form action="{{ route('likes.destroy', $post) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="text-sm text-red-500">いいね解除</button>
-                                </form>
-                            @else
-                                <form action="{{ route('likes.store', $post) }}" method="POST">
-                                    @csrf
-                                    <button class="text-sm text-pink-500">いいね</button>
-                                </form>
-                            @endif
-                        </div>
-
-                        {{-- コメント --}}
-                        <div class="mb-3">
-                            @foreach ($post->comments as $comment)
-                                <div class="text-sm mb-1">
-                                    <span class="font-semibold">
-                                        {{ $comment->user->name }}
-                                    </span>
-                                    <span>
-                                        {{ $comment->body }}
-                                    </span>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        {{-- コメント投稿 --}}
-                        <form action="{{ route('comments.store', $post) }}" method="POST" class="flex gap-2">
-                            @csrf
-                            <input type="text"
-                                   name="body"
-                                   placeholder="コメントを書く"
-                                   class="flex-1 border rounded px-2 py-1 text-sm">
-                            <button class="text-blue-500 text-sm">
-                                投稿
-                            </button>
-                        </form>
-
-                        {{-- 削除 --}}
-                        @if ($post->user_id === auth()->id())
-                            <div class="mt-3">
-                                <form action="{{ route('posts.destroy', $post) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="text-gray-500 text-sm">
-                                        削除
-                                    </button>
-                                </form>
-                            </div>
+                        @if ($liked)
+                            <form action="{{ route('likes.destroy', $post) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" style="color: #ef4444; background: none; border: none; cursor: pointer;">
+                                    いいね解除
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('likes.store', $post) }}" method="POST">
+                                @csrf
+                                <button type="submit" style="color: #ec4899; background: none; border: none; cursor: pointer;">
+                                    いいね
+                                </button>
+                            </form>
                         @endif
                     </div>
 
+                    <div style="margin-bottom: 12px;">
+                        @foreach ($post->comments as $comment)
+                            <div style="font-size: 14px; margin-bottom: 4px;">
+                                <strong>{{ $comment->user->name }}</strong>
+                                <span>{{ $comment->body }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <form action="{{ route('comments.store', $post) }}" method="POST" style="display: flex; gap: 8px; margin-bottom: 12px;">
+                        @csrf
+                        <input type="text"
+                               name="body"
+                               placeholder="コメントを書く"
+                               style="flex: 1; padding: 6px 8px; border: 1px solid #ccc; border-radius: 6px;">
+                        <button type="submit" style="color: #2563eb; background: none; border: none; cursor: pointer;">
+                            投稿
+                        </button>
+                    </form>
+
+                    @if ($post->user_id === auth()->id())
+                        <form action="{{ route('posts.destroy', $post) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" style="color: #6b7280; background: none; border: none; cursor: pointer;">
+                                削除
+                            </button>
+                        </form>
+                    @endif
                 </div>
-            @endforeach
-        </div>
+            </div>
+        @endforeach
     </div>
 </x-app-layout>

@@ -5,6 +5,7 @@ use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\MypageController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,6 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('likes.destroy');
 
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+
+    Route::get('/mypage', [MypageController::class, 'index'])->name('mypage.index');
 });
 
 require __DIR__ . '/auth.php';
